@@ -1,13 +1,42 @@
 SpatialAssociations
 ===================
 
-Introduction goes here.
+SpatialAssociations provides helper methods for ActiveRecord::Base that enable spatially constrained associations.
+
+A Spatial Association is one where the coupling between models is determined by the result of a geometric function, rather than a relational key-based linking.
+
+This plugin assumes that you are using PostGIS, and that your geometric columns are all named 'geometry'.
+
+
+Helpers Available
+=================
+
+is_enclosed_by :model
+	i.e. a city is_enclosed_by a state.
+	
+encloses :models
+	i.e. a state encloses cities.
 
 
 Example
 =======
 
-Example goes here.
+Say I have two spatial enabled models, City and State.
 
+Add the helpers to the appropriate models:
 
-Copyright (c) 2008 [name of plugin creator], released under the MIT license
+	class City < ActiveRecord::Base
+		is_enclosed_by :state
+	end
+
+	class State < ActiveRecord::Base
+		encloses :cities
+	end
+
+I can now use these associations as follows:
+
+@someCitysState = @someCityObject.state # => Returns a state object that spatially encloses the receiving city.
+
+@someStatesCities = @someStateObject.cities # => Returns an array of City objects which are spatially enclosed by the receiving state.
+
+Copyright (c) 2008 Bradley Spaulding, released under the MIT license
